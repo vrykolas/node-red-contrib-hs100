@@ -27,7 +27,8 @@
   },
   "node-red": {
     "nodes": {
-      "hs100": "index.js"
+      "hs100": "index.js",
+      "hs100-status-on": "src/status.js"
     }
   }
 }
