@@ -30,7 +30,8 @@
       "hs100": "index.js",
       "hs100-action-on": "src/actions/turn-on.js",
       "hs100-action-off": "src/actions/turn-off.js",
-      "hs100-status-on": "src/status.js"
+      "hs100-status-on": "src/status.js",
+      "hs100-server": "src/server.js"
     }
   }
 }

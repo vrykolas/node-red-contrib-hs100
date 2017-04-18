@@ -1,0 +1,98 @@
+<script type="text/x-red" data-template-name="hs100-server">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i>Node Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-plugName"><i class="icon-tag"></i>TP-LINK Plug</label>
+        <select id="node-input-plugName" placeholder="" style="width: 60%;">
+            <option>Please Select One</option>
+        </select>
+        <input type="hidden" id="node-input-host">
+        <input type="hidden" id="node-input-port">
+    </div>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('hs100-server', {
+        category: 'config',
+        defaults: {
+            name: {value: ''},
+            plugName: {value: '', required: true},
+            host: {value: '', required: true},
+            port: {value: '', required: true}
+        },
+        label: function () {
+            return this.name || 'hs100';
+        },
+        oneditprepare: function() {
+            $.get( 'hs100/server')
+            .done( function(data) {
+                var $plugName = $('#node-input-plugName');
+                $plugName.empty().append('<option>Please Select One</option>');
+                var plugs = JSON.parse(data);
+                if(!plugs || plugs.length <= 0) {
+                    return;
+                }
+                var selectedHost = $('#node-input-host').val();
+                var selectedPort = $('#node-input-port').val();
+                var selectedValue = encodeURI(selectedHost + ':' + selectedPort);
+
+                plugs.forEach(function(plug){
+                    var value = encodeURI(plug.host + ':' + plug.port);
+                    var $option = $('<option value="' + value + '">' + plug.name + '</option>');
+                    if(value === selectedValue) {
+                        $option.attr('selected', 'selected');
+                    }
+                    $plugName.append($option);
+                });
+            })
+            .fail(function() {
+                RED.notify("Something went wrong discovering a plug", "error");
+            });
+        },
+        oneditsave: function() {
+            var selectedValue = decodeURI($('#node-input-plugName :selected').val());
+            var selectedHost = '';
+            var selectedPort = '';
+            var matches = selectedValue.match(/^(.*):(.*)$);
+            if(matches) {
+                selectedHost = matches[1];
+                selectedPort = matches[2];
+            }
+
+            $('#node-input-host').val(selectedHost);
+            $('#node-input-port').val(selectedPort);
+        }
+    });
+</script>
+
+<script type="text/x-red" data-help-name="hs100">
+<h1>node-red-contrib-hs100</h1>
+
+<p>This Node-RED node is for controlling tp-link Wi-Fi Smart Plug - Model HS100.</p>
+
+<p>This node has only been tested with a HS100(UK). The HS100 is also available in US and EU plug versions. We expect they will work too.</p>
+
+<p>This node simply wraps the excellent work here <a href="https://github.com/czjs2/hs100-api">https://github.com/czjs2/hs100-api</a>. </p>
+
+<h1>Configuration</h1>
+
+<p>Drag this node on to a worksheet and double click it. Enter the IP address of the plug on your network. Save and deploy.</p>
+
+<h1>Actuation</h1>
+
+<h2>Turn on</h2>
+
+<p>To turn the HS100 on, send a message to this node's input with the topic or payload set to <code>on</code>.</p>
+
+<h2>Turn off</h2>
+
+<p>To turn the HS100 off, send a message to this node's input with the topic or payload set to <code>off</code>.</p>
+
+<h2>Obtain power consumption data</h2>
+
+<p>To obtain the power consumption, send a message to this node's input with the topic or payload set to `consumption`. The consumption data will
+be sent via this node's output in <code>msg.payload</code>.</p>
+
+</script>

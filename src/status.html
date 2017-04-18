@@ -28,7 +28,7 @@ THE SOFTWARE.
         color: '#f37a33',
         defaults: {
             name: {value: ''},
-            host: {value: ''}
+            plug: {type: 'hs100-server', required: true}
         },
         inputs: 1,
         outputs: 2,
@@ -37,44 +37,20 @@ THE SOFTWARE.
             return this.name || 'hs100-status';
         },
         paletteLabel: 'hs100-status',
-        align: 'right',
-        oneditprepare: function() {
-            $('#node-config-input-scan').click(function() {
-                $.get( 'hs100/server')
-                .done( function(data) {
-                    var sockets = JSON.parse(data);
-                    if(!sockets || sockets.length <= 0) {
-                        return;
-                    }
-                    $('#node-input-hostscan').html("<i class='fa fa-i-cursor'></i>");
-                    $('#node-input-host').replaceWith('<select id="node-input-host" style="width: 60%;"></select>');
-                    sockets.forEach(function(sockets){
-                        sockets.function.forEach(function(item){
-                            $('#node-input-host').append('<option value="' + encodeURI(item.host + ':' + item.port) + '">' + item.deviceId + '</option>');
-                        });
-                    });
-                })
-                .fail(function() {
-                    RED.notify("Something went wrong discovering a socket", "error");
-                });
-            });
-        }
+        align: 'right'
     });
 </script>
 
 <script type="text/x-red" data-template-name="hs100-status">
-
     <div class="form-row">
         <label for="node-input-name"><i class="icon-tag"></i>Node Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
     </div>
 
     <div class="form-row">
-        <label for="node-input-host"><i class="icon-tag"></i>TP-LINK Switch IP Address</label>
-        <input type="text" id="node-input-host" placeholder="" style="width: 60%;">
-        <a id="node-input-hostscan" class="editor-button"><i class="fa fa-search"></i></a>
+        <label for="node-input-plug"><i class="icon-tag"></i>Plug</label>
+        <input type="text" id="node-input-plug">
     </div>
-
 </script>
 
 <script type="text/x-red" data-help-name="hs100-status">

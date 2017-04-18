@@ -23,17 +23,11 @@
  */
 
 module.exports = function(RED) {
-    'use strict';
-
-    var Hs100Api = require('fx-hs100-api');
-
     RED.nodes.registerType('hs100-action-on', function(config) {
-
         RED.nodes.createNode(this, config);
         var node = this;
 
-        var client = new Hs100Api.Client();
-        var plug = client.getPlug({host: config.host});
+        var plug = RED.nodes.getNode(config.plug);
 
         node.on('input', function(msg) {
             plug.setPowerState(true).then(function() {

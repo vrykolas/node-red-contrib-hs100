@@ -25,15 +25,12 @@
 module.exports = function (RED) {
     'use strict';
 
-    var Hs100Api = require('fx-hs100-api');
-
     RED.nodes.registerType('hs100', function (config) {
 
         RED.nodes.createNode(this, config);
         var node = this;
 
-        var client = new Hs100Api.Client();
-        var plug = client.getPlug({host: config.host});
+        var plug = RED.nodes.getNode(config.plug);
 
         node.on('input', function (msg) {
             if (msg.payload === 'consumption' || msg.topic === 'consumption') {
@@ -72,39 +69,5 @@ module.exports = function (RED) {
             node.error(err);
             node.status({fill: 'red', shape: 'dot', text: err.message});
         }
-    });
-
-    RED.httpAdmin.get('/hs100/server', function (req, res, next) {
-        var client = new Hs100Api.Client();
-        var plugs = [];
-
-        client.on('plug-new', function(plug) {
-            plugs.push({
-                host: plug.host,
-                port: plug.port,
-                deviceId: plug.deviceId
-            });
-        });
-        client.on('plug-online', function(plug) {
-            plugs.push({
-                host: plug.host,
-                port: plug.port,
-                deviceId: plug.deviceId
-            });
-        });
-        client.on('plug-offline', function(plug) {
-            plugs.push({
-                host: plug.host,
-                port: plug.port,
-                deviceId: plug.deviceId
-            });
-        });
-
-        client.startDiscovery();
-
-        setTimeout(function() {
-            client.stopDiscovery();
-            res.end(JSON.stringify(plugs));
-        }, 5000);
     });
 };
