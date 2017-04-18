@@ -73,4 +73,38 @@ module.exports = function (RED) {
             node.status({fill: 'red', shape: 'dot', text: err.message});
         }
     });
+
+    RED.httpAdmin.get('/hs100/server', function (req, res, next) {
+        var client = new Hs100Api.Client();
+        var plugs = [];
+
+        client.on('plug-new', function(plug) {
+            plugs.push({
+                host: plug.host,
+                port: plug.port,
+                deviceId: plug.deviceId
+            });
+        });
+        client.on('plug-online', function(plug) {
+            plugs.push({
+                host: plug.host,
+                port: plug.port,
+                deviceId: plug.deviceId
+            });
+        });
+        client.on('plug-offline', function(plug) {
+            plugs.push({
+                host: plug.host,
+                port: plug.port,
+                deviceId: plug.deviceId
+            });
+        });
+
+        client.startDiscovery();
+
+        setTimeout(function() {
+            client.stopDiscovery();
+            res.end(JSON.stringify(plugs));
+        }, 5000);
+    });
 };
