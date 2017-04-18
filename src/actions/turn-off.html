@@ -29,7 +29,7 @@ THE SOFTWARE.
         defaults: {
             name: {value: ''},
             host: {value: ''},
-            cooldownDelay: {value: 0}
+            cooldownDelay: {value: 0, required:true, validate:RED.validators.number()}
         },
         inputs: 1,
         outputs: 1,
