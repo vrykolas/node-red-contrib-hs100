@@ -55,7 +55,7 @@
             var selectedValue = decodeURI($('#node-input-plugName :selected').val());
             var selectedHost = '';
             var selectedPort = '';
-            var matches = selectedValue.match(/^(.*):(.*)$);
+            var matches = selectedValue.match(/^(.*):(.*)$/);
             if(matches) {
                 selectedHost = matches[1];
                 selectedPort = matches[2];
