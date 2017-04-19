@@ -26,15 +26,20 @@ module.exports = function (RED) {
     'use strict';
 
     RED.nodes.registerType('hs100', function (config) {
-
         RED.nodes.createNode(this, config);
-        var node = this;
 
-        var plug = RED.nodes.getNode(config.plug);
+        const hs100Server = RED.nodes.getNode(config.plug);
+        if(!hs100Server) {
+            errorHandler(new Error('No Plug selected'));
+            return;
+        }
+
+        const node = this;
+        node.plug = hs100Server.plug;
 
         node.on('input', function (msg) {
             if (msg.payload === 'consumption' || msg.topic === 'consumption') {
-                plug.getConsumption().then(function (data) {
+                node.plug.getConsumption().then(function (data) {
                     node.send({payload: data});
                 }).catch(errorHandler);
             } else if (msg.payload === 'on' || msg.topic === 'on') {
@@ -46,17 +51,13 @@ module.exports = function (RED) {
             }
         });
 
-        node.on('close', function () {
-            client.socket.close();
-        });
-
         function setPowerState(on) {
             node.status({
                 fill: 'orange',
                 shape: on ? 'dot' : 'circle',
                 text: 'Turning ' + ( on ? 'on' : 'off')
             });
-            plug.setPowerState(on).then(function () {
+            node.plug.setPowerState(on).then(function () {
                 node.status({
                     fill: 'green',
                     shape: on ? 'dot' : 'circle',

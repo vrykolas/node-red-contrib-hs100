@@ -13,16 +13,16 @@ module.exports = function(RED) {
         node.port = config.port;
         createClient(node);
     }
-    RED.nodes.registerType('hs100-server', Hs100ServerNode)
+    RED.nodes.registerType('hs100-server', Hs100ServerNode);
 
     function createClient (node) {
-        node.plug = client.getPlug({
+        node.plug = hs100Client.getPlug({
             host: node.host,
             port: node.port
         });
     }
 
-    RED.httpAdmin.get('/hs100/server', function(req, res, next) {
+    RED.httpAdmin.get('/hs100/server', function(req, res) {
         const plugs = [];
         hs100Client.devices.forEach(function(plug) {
             if(plug.status === 'online') {
