@@ -8,31 +8,25 @@ module.exports = function(RED) {
         RED.nodes.createNode(this, config);
         const node = this;
 
-        node.plugName = config.plugName;
-        node.host = config.host;
-        node.port = config.port;
+        node.deviceId = config.deviceId;
         createClient(node);
     }
     RED.nodes.registerType('hs100-server', Hs100ServerNode);
 
     function createClient (node) {
-        node.plug = hs100Client.getPlug({
-            host: node.host,
-            port: node.port
-        });
+        if(!hs100Client.devices.has(node.deviceId)) {
+            console.log('Disconnected from Harmony Hub: ' + e)
+        }
+        node.plug = hs100Client.devices.get(node.deviceId);
     }
 
     RED.httpAdmin.get('/hs100/server', function(req, res) {
         const plugs = [];
         hs100Client.devices.forEach(function(plug) {
-            if(plug.status === 'online') {
-                plugs.push({
-                    name: plug.name,
-                    host: plug.host,
-                    port: plug.port,
-                    timeout: plug.timeout
-                });
-            }
+            plugs.push({
+                name: plug.name,
+                deviceId: plug.deviceId
+            });
         });
         res.end(JSON.stringify(plugs));
     });

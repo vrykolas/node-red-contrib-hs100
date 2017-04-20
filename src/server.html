@@ -4,12 +4,8 @@
         <input type="text" id="node-input-name" placeholder="Name">
     </div>
     <div class="form-row">
-        <label for="node-input-plugName"><i class="icon-tag"></i>TP-LINK Plug</label>
-        <select id="node-input-plugName" placeholder="" style="width: 60%;">
-            <option>Please Select One</option>
-        </select>
-        <input type="hidden" id="node-input-host">
-        <input type="hidden" id="node-input-port">
+        <label for="node-input-deviceId"><i class="icon-tag"></i>TP-LINK Plug</label>
+        <input type="hidden" id="node-input-deviceId">
     </div>
 </script>
 
@@ -18,9 +14,7 @@
         category: 'config',
         defaults: {
             name: {value: ''},
-            plugName: {value: '', required: true},
-            host: {value: '', required: true},
-            port: {value: '', required: true}
+            deviceId: {value: '', required: true}
         },
         label: function () {
             return this.name || 'hs100';
@@ -28,41 +22,28 @@
         oneditprepare: function() {
             $.get( 'hs100/server')
             .done( function(data) {
-                var $plugName = $('#node-input-plugName');
-                $plugName.empty().append('<option>Please Select One</option>');
+                var $selectedValue = $('#node-input-deviceId');
+                var selectedValue = $selectedValue.val();
+                var $deviceId = $('<select id="node-input-deviceId" style="width: 60%;"></select>');
+                $deviceId.append('<option>Please Select One</option>');
+
                 var plugs = JSON.parse(data);
                 if(!plugs || plugs.length <= 0) {
                     return;
                 }
-                var selectedHost = $('#node-input-host').val();
-                var selectedPort = $('#node-input-port').val();
-                var selectedValue = encodeURI(selectedHost + ':' + selectedPort);
 
                 plugs.forEach(function(plug){
-                    var value = encodeURI(plug.host + ':' + plug.port);
-                    var $option = $('<option value="' + value + '">' + plug.name + '</option>');
+                    var $option = $('<option value="' + plug.deviceId + '">' + plug.name + '</option>');
                     if(value === selectedValue) {
                         $option.attr('selected', 'selected');
                     }
-                    $plugName.append($option);
+                    $deviceId.append($option);
                 });
+                $selectedValue.replaceWith($deviceId);
             })
             .fail(function() {
                 RED.notify("Something went wrong discovering a plug", "error");
             });
-        },
-        oneditsave: function() {
-            var selectedValue = decodeURI($('#node-input-plugName :selected').val());
-            var selectedHost = '';
-            var selectedPort = '';
-            var matches = selectedValue.match(/^(.*):(.*)$/);
-            if(matches) {
-                selectedHost = matches[1];
-                selectedPort = matches[2];
-            }
-
-            $('#node-input-host').val(selectedHost);
-            $('#node-input-port').val(selectedPort);
         }
     });
 </script>
