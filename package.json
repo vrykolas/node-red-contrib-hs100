@@ -1,5 +1,5 @@
 {
-  "name": "node-red-contrib-hs100",
+  "name": "node-red-contrib-hs100-socket",
   "version": "0.3.0",
   "description": "",
   "main": "index.js",
@@ -16,18 +16,17 @@
   "scripts": {
     "test": "node_modules/.bin/mocha tests/test.js"
   },
-  "author": "@biddster",
+  "author": "@vrykolas",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/biddster/node-red-contrib-hs100.git"
+    "url": "https://github.com/vrykolas/node-red-contrib-hs100-socket.git"
   },
   "dependencies": {
     "fx-hs100-api": "^0.3.0"
   },
   "node-red": {
     "nodes": {
-      "hs100": "index.js",
       "hs100-action-on": "src/turn-on.js",
       "hs100-action-off": "src/turn-off.js",
       "hs100-status-on": "src/status.js",
