@@ -1,0 +1,44 @@
+{
+  "extends": "standard",
+  "plugins": [
+    "standard"
+  ],
+  "env": {
+    "browser": true,
+    "es6": true,
+    "jquery": true,
+    "mocha": true,
+    "node": true
+  },
+  "rules": {
+    "keyword-spacing": [
+      "error",
+      {
+        "before": true,
+        "after": false,
+        "overrides": {
+          "case": { "after": true },
+          "const": { "after": true },
+          "do": { "after": true },
+          "else": { "after": true },
+          "let": { "after": true },
+          "return": { "after": true },
+          "try": { "after": true },
+          "var": { "after": true }
+        }
+      }
+    ],
+    "semi": [2, "always"],
+    "space-before-function-paren": [2, "never"]
+  },
+  "globals": {
+    "requireModule": true,
+    "expect": true,
+    "AssertionError": true,
+    "Assertion": true,
+    "assert": true,
+    "proxyquire": true,
+    "resolvePath": true,
+    "sinon": true
+  }
+}
