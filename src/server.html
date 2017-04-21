@@ -1,79 +1,77 @@
 <script type="text/x-red" data-template-name="hs100-server">
-    <div class="form-row">
-        <label for="node-input-name"><i class="icon-tag"></i>Node Name</label>
-        <input type="text" id="node-input-name" placeholder="Name">
-    </div>
-    <div class="form-row">
-        <label for="node-input-deviceId"><i class="icon-tag"></i>TP-LINK Plug</label>
-        <input type="hidden" id="node-input-deviceId">
-    </div>
+  <div class="form-row">
+    <label for="node-input-name"><i class="icon-tag"></i>Node Name</label>
+    <input type="text" id="node-input-name" placeholder="Name">
+  </div>
+  <div class="form-row">
+    <label for="node-input-deviceId"><i class="icon-tag"></i>TP-LINK Plug</label>
+    <input type="hidden" id="node-input-deviceId">
+  </div>
 </script>
 
 <script type="text/javascript">
-    RED.nodes.registerType('hs100-server', {
-        category: 'config',
-        defaults: {
-            name: {value: ''},
-            deviceId: {value: '', required: true}
-        },
-        label: function () {
-            return this.name || 'hs100';
-        },
-        oneditprepare: function() {
-            $.get( 'hs100/server')
-            .done( function(data) {
-                var $selectedValue = $('#node-input-deviceId');
-                var selectedValue = $selectedValue.val();
-                var $deviceId = $('<select id="node-input-deviceId" style="width: 60%;"></select>');
-                $deviceId.append('<option>Please Select One</option>');
+  RED.nodes.registerType('hs100-server', {
+    category: 'config',
+    defaults: {
+      name: {value: ''},
+      deviceId: {value: '', required: true}
+    },
+    label: function () {
+      return this.name || 'hs100';
+    },
+    oneditprepare: function() {
+      $.get( 'hs100/server')
+      .done( function(data) {
+        var $selectedValue = $('#node-input-deviceId');
+        var selectedValue = $selectedValue.val();
+        var $deviceId = $('<select id="node-input-deviceId" style="width: 60%;"></select>');
+        $deviceId.append('<option>Please Select One</option>');
 
-                var plugs = JSON.parse(data);
-                if(!plugs || plugs.length <= 0) {
-                    return;
-                }
-
-                plugs.forEach(function(plug){
-                    var $option = $('<option value="' + plug.deviceId + '">' + plug.name + '</option>');
-                    if(value === selectedValue) {
-                        $option.attr('selected', 'selected');
-                    }
-                    $deviceId.append($option);
-                });
-                $selectedValue.replaceWith($deviceId);
-            })
-            .fail(function() {
-                RED.notify("Something went wrong discovering a plug", "error");
-            });
+        var plugs = JSON.parse(data);
+        if(!plugs || plugs.length <= 0) {
+          return;
         }
-    });
+
+        plugs.forEach(function(plug){
+          var $option = $('<option value="' + plug.deviceId + '">' + plug.name + '</option>');
+          if(value === selectedValue) {
+            $option.attr('selected', 'selected');
+          }
+          $deviceId.append($option);
+        });
+        $selectedValue.replaceWith($deviceId);
+      })
+      .fail(function() {
+        RED.notify("Something went wrong discovering a plug", "error");
+      });
+    }
+  });
 </script>
 
 <script type="text/x-red" data-help-name="hs100">
-<h1>node-red-contrib-hs100</h1>
+  <h1>node-red-contrib-hs100</h1>
 
-<p>This Node-RED node is for controlling tp-link Wi-Fi Smart Plug - Model HS100.</p>
+  <p>This Node-RED node is for controlling tp-link Wi-Fi Smart Plug - Model HS100.</p>
 
-<p>This node has only been tested with a HS100(UK). The HS100 is also available in US and EU plug versions. We expect they will work too.</p>
+  <p>This node has only been tested with a HS100(UK). The HS100 is also available in US and EU plug versions. We expect they will work too.</p>
 
-<p>This node simply wraps the excellent work here <a href="https://github.com/czjs2/hs100-api">https://github.com/czjs2/hs100-api</a>. </p>
+  <p>This node simply wraps the excellent work here <a href="https://github.com/czjs2/hs100-api">https://github.com/czjs2/hs100-api</a>. </p>
 
-<h1>Configuration</h1>
+  <h1>Configuration</h1>
 
-<p>Drag this node on to a worksheet and double click it. Enter the IP address of the plug on your network. Save and deploy.</p>
+  <p>Drag this node on to a worksheet and double click it. Enter the IP address of the plug on your network. Save and deploy.</p>
 
-<h1>Actuation</h1>
+  <h1>Actuation</h1>
 
-<h2>Turn on</h2>
+  <h2>Turn on</h2>
 
-<p>To turn the HS100 on, send a message to this node's input with the topic or payload set to <code>on</code>.</p>
+  <p>To turn the HS100 on, send a message to this node's input with the topic or payload set to <code>on</code>.</p>
 
-<h2>Turn off</h2>
+  <h2>Turn off</h2>
 
-<p>To turn the HS100 off, send a message to this node's input with the topic or payload set to <code>off</code>.</p>
+  <p>To turn the HS100 off, send a message to this node's input with the topic or payload set to <code>off</code>.</p>
 
-<h2>Obtain power consumption data</h2>
+  <h2>Obtain power consumption data</h2>
 
-<p>To obtain the power consumption, send a message to this node's input with the topic or payload set to `consumption`. The consumption data will
-be sent via this node's output in <code>msg.payload</code>.</p>
-
+  <p>To obtain the power consumption, send a message to this node's input with the topic or payload set to `consumption`. The consumption data will be sent via this node's output in <code>msg.payload</code>.</p>
 </script>

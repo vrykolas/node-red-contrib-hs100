@@ -1,27 +1,28 @@
 module.exports = function(RED) {
-    RED.nodes.registerType('hs100-action-on', function(config) {
-        RED.nodes.createNode(this, config);
+  function hs100ActionOn(config) {
+    RED.nodes.createNode(this, config);
 
-        const hs100Server = RED.nodes.getNode(config.plug);
-        if(!hs100Server) {
-            errorHandler(new Error('No Plug selected'));
-            return;
-        }
+    const node = this;
+    const configNode = RED.nodes.getNode(config.plug);
+    node.deviceId = configNode.deviceId;
+    const hs100Client = configNode.hs100Client;
 
-        const node = this;
-        node.plug = hs100Server.plug;
-        node.on('input', function(msg) {
-            node.plug.setPowerState(true).then(function() {
-                const warmupDelay = parseInt(config.warmupDelay, 10) * 1000;
-                setTimeout(function() {
-                    node.send({payload: msg});
-                }, warmupDelay);
-            }).catch(errorHandler);
-        });
+    node.on('input', (msg) => {
+      if(!hs100Client.devices.has(node.deviceId)) {
+        return;
+      }
 
-        function errorHandler(err) {
-            node.error(err);
-            node.status({fill: 'red', shape: 'dot', text: err.message});
-        }
+      const plug = hs100Client.devices.get(node.deviceId);
+      plug.setPowerState(true).then(() => {
+        const warmupDelay = parseInt(config.warmupDelay, 10) * 1000;
+        setTimeout(() => {
+          node.send(msg);
+        }, warmupDelay);
+      }).catch((err) => {
+        node.error(err);
+        node.status({fill: 'red', shape: 'dot', text: err.message});
+      });
     });
+  }
+  RED.nodes.registerType('hs100-action-on', hs100ActionOn);
 };

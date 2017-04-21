@@ -1,49 +1,48 @@
 <script type="text/javascript">
-    RED.nodes.registerType('hs100-action-on', {
-        category: 'hs100',
-        color: '#f37a33',
-        defaults: {
-            name: {value: ''},
-            plug: {type: 'hs100-server', required: true},
-            warmupDelay: {value: 0, required: true, validate: RED.validators.number()}
-        },
-        inputs: 1,
-        outputs: 1,
-        icon: 'hs100.png',
-        label: function () {
-            return this.name || 'hs100-action-on';
-        },
-        paletteLabel: 'hs100-action-on',
-        align: 'right'
-    });
+  RED.nodes.registerType('hs100-action-on', {
+    category: 'hs100',
+    color: '#f37a33',
+    defaults: {
+      name: {value: ''},
+      plug: {type: 'hs100-server', required: true},
+      warmupDelay: {value: 0, required: true, validate: RED.validators.number()}
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: 'hs100.png',
+    label: function () {
+      return this.name || 'hs100-action-on';
+    },
+    paletteLabel: 'hs100-action-on',
+    align: 'right'
+  });
 </script>
 
 <script type="text/x-red" data-template-name="hs100-action-on">
-    <div class="form-row">
-        <label for="node-input-name"><i class="icon-tag"></i>Node Name</label>
-        <input type="text" id="node-input-name" placeholder="Name">
-    </div>
-    <div class="form-row">
-        <label for="node-input-plug"><i class="icon-tag"></i>Plug</label>
-        <input type="text" id="node-input-plug">
-    </div>
-    <div class="form-row">
-        <label for="node-input-warmupDelay"><i class="icon-tag"></i>Equipment Warmup Delay (seconds)</label>
-        <input type="text" id="node-input-warmupDelay" placeholder="">
-    </div>
+  <div class="form-row">
+    <label for="node-input-name"><i class="icon-tag"></i>Node Name</label>
+    <input type="text" id="node-input-name" placeholder="Name">
+  </div>
+  <div class="form-row">
+    <label for="node-input-plug"><i class="icon-tag"></i>Plug</label>
+    <input type="text" id="node-input-plug">
+  </div>
+  <div class="form-row">
+    <label for="node-input-warmupDelay"><i class="icon-tag"></i>Equipment Warmup Delay (seconds)</label>
+    <input type="text" id="node-input-warmupDelay" placeholder="">
+  </div>
 </script>
 
 <script type="text/x-red" data-help-name="hs100-action-on">
-<h1>node-red-contrib-hs100</h1>
+  <h1>node-red-contrib-hs100</h1>
 
-<p>This Node-RED node is for controlling tp-link Wi-Fi Smart Plug - Model HS100.</p>
+  <p>This Node-RED node is for controlling tp-link Wi-Fi Smart Plug - Model HS100.</p>
 
-<p>This node has only been tested with a HS100(UK). The HS100 is also available in US and EU plug versions. We expect they will work too.</p>
+  <p>This node has only been tested with a HS100(UK). The HS100 is also available in US and EU plug versions. We expect they will work too.</p>
 
-<p>This node simply wraps the excellent work here <a href="https://github.com/czjs2/hs100-api">https://github.com/czjs2/hs100-api</a>. </p>
+  <p>This node simply wraps the excellent work here <a href="https://github.com/czjs2/hs100-api">https://github.com/czjs2/hs100-api</a>. </p>
 
-<h1>Configuration</h1>
+  <h1>Configuration</h1>
 
-<p>Drag this node on to a worksheet and double click it. Enter the IP address of the plug on your network. Save and deploy.</p>
-
+  <p>Drag this node on to a worksheet and double click it. Enter the IP address of the plug on your network. Save and deploy.</p>
 </script>

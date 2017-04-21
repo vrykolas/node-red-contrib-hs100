@@ -1,28 +1,29 @@
 module.exports = function(RED) {
-    RED.nodes.registerType('hs100-status', function(config) {
-        RED.nodes.createNode(this, config);
+  function hs100Status(config) {
+    RED.nodes.createNode(this, config);
 
-        const hs100Server = RED.nodes.getNode(config.plug);
-        if(!hs100Server) {
-            errorHandler(new Error('No Plug selected'));
-            return;
+    const node = this;
+    const configNode = RED.nodes.getNode(config.plug);
+    node.deviceId = configNode.deviceId;
+    const hs100Client = configNode.hs100Client;
+
+    node.on('input', (msg) => {
+      if(!hs100Client.devices.has(node.deviceId)) {
+        return node.send([null, null, msg]);
+      }
+
+      const plug = hs100Client.devices.get(node.deviceId);
+      plug.getPowerState().then(function(state) {
+        if(state) {
+          return node.send([msg, null, null]);
         }
-
-        const node = this;
-        node.plug = hs100Server.plug;
-
-        node.on('input', function() {
-            node.plug.getPowerState().then(function(state) {
-                if(state) {
-                    return node.send([true, false]);
-                }
-                node.send([false, true]);
-            }).catch(errorHandler);
-        });
-
-        function errorHandler(err) {
-            node.error(err);
-            node.status({fill: 'red', shape: 'dot', text: err.message});
-        }
+        node.send([null, msg, null]);
+      }).catch((err) => {
+        node.error(err);
+        node.status({fill: 'red', shape: 'dot', text: err.message});
+      });
     });
+  }
+
+  RED.nodes.registerType('hs100-status', hs100Status);
 };
